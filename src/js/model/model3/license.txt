@@ -1,0 +1,11 @@
+Model Information:
+* title:	Song Noir Chinese Shaped Vase
+* source:	https://sketchfab.com/3d-models/song-noir-chinese-shaped-vase-9a92326f9a24490e8751a59a23a35dec
+* author:	riach (https://sketchfab.com/riach)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Song Noir Chinese Shaped Vase" (https://sketchfab.com/3d-models/song-noir-chinese-shaped-vase-9a92326f9a24490e8751a59a23a35dec) by riach (https://sketchfab.com/riach) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
