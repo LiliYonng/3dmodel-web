@@ -1,14 +1,18 @@
 <template lang="">
-        <div class="box">
-            <div id='container'></div>
-            <div class='texuBtn'>
-            <button type="">1</button>
-            <button type="">2</button>
-            <button type="">3</button>
-            </div>
-        </div>
+  <div class="box">
+    <!-- <div class="intrBtn"> <button class="textIntr">文字介绍</button>
+  <button class="audioIntr">语音介绍</button> </div> <div class="left_aside"> < </div>
+  <div class="right_aside"> > </div> -->
+    <div id="container"></div>
+    <div class="ctr_pannel">
+      <div class="texuBtn" @click="changeMap('color2')">
+        <img src="/model/icon/color_icon.jpg" id="color" />
+        <img src="/model/icon/specular_icon.jpg" id="specular" />
+        <img src="/model/icon/gilt_icon.jpg" id="gilt" />
+      </div>
+    </div>
+  </div>
 </template>
-
 
 <script>
 import * as THREE from "three";
@@ -19,108 +23,257 @@ import { OBJLoader } from "../js/js/OBJLoader.js";
 import { MTLLoader } from "../js/js/MTLLoader.js";
 
 export default {
-    name:'model',
-    props:["modelInfo"],
-    data(){
-        return {
-        // myModel: {
-        // modelName: "model1",
-        // type: "obj",
-        // texAry: ["color", "specular", "gilt"],
-        // path:"/model/"},
-        myModelInfo:this.modelInfo,
-        myModel:null
+  name: "model",
+  props: ["modelAry","modelFlag"],
+  data() {
+    return {
+      // curModel: {
+      // name: "model1",
+      // type: "obj",
+      // texAry: ["color", "specular", "gilt"],
+      // path:"/model/"},
+      modelInfo: this.modelAry,
+      Flag:this.modelFlag,
+      curModel: null,
+      modelObj: null,
+      scene: null,
+      camera: null,
+      renderer: null,
+      controls: null,
+    };
+  },
+  methods: {
+    init() {
+      //场景，灯光，摄像机初始化
+      this.initScen();
+      //手势控制
+      this.controlModl();
+    },
+    render() {
+      const render= this.render;
+
+      this.renderer.render(this.scene, this.camera);
+      if (this.modelObj) {
+        this.modelObj.rotation.y += 0.01; //每次绕y轴旋转0.01弧度
+      }
+      this.controls.update();
+      requestAnimationFrame(render);
+    },    
+    //场景和模型的初始化
+    initScen: function () {
+      const container = document.getElementById("container");
+      //     const container = document.createElement( 'div' );
+      // document.body.appendChild(container);
+      this.scene = new THREE.Scene();
+      //相机
+      this.camera = new THREE.PerspectiveCamera(75, 375 / 400, 0.01, 1000);
+
+      this.camera.position.set(10, 10, 50);
+      //渲染器
+      this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+      // this.renderer.setClearColor(0x404040);
+      this.renderer.setSize(375, 400);
+
+      container.appendChild(this.renderer.domElement);
+      //光源
+      let light = new THREE.AmbientLight(0xffffff, 1);
+      this.scene.add(light);
+
+      //var textureLoader = new THREE.TextureLoader();
+      // 加载背景图片
+      //var texture = textureLoader.load("/model/bg.png");
+      // 纹理对象Texture赋值给场景对象的背景属性.background
+      // this.scene.background = texture;
+    },
+    loadObj: function () {
+      let modelName = this.curModel.name;
+      let modelType = this.curModel.type;
+      let Path = this.curModel.path + this.curModel.name;
+                 
+      switch (modelType) {
+        case "obj": {
+           console.log(this);
+          const OBJLoad = new OBJLoader(); //obj加载器
+          const MTLLoad = new MTLLoader(); //材质文件加载器
+          //obj的模型会和MaterialCreator包含的材质对应起来
+          MTLLoad.load(Path + ".mtl", function (materials) {
+            OBJLoad.setMaterials(materials);
+          });
+          OBJLoad.load(Path + ".obj", (obj) => {
+            obj.scale.set(0.4, 0.4, 0.4);
+            obj.position.set(0, 5, -8);
+            this.modelObj = obj;
+            this.scene.add(obj);
+          });
+          break;
         }
+        case "gltf": {
+          const loader = new GLTFLoader(); //'model/p/'
+          //匿名函数this指向全局对象。如果使用非匿名函数需要将this指向vm
+          loader.load(Path + ".gltf",  (gltf) =>{
+            this.modelObj = gltf.scene;
+            this.modelObj.scale.set(1.5, 1.5, 1.5);
+            this.modelObj.position.set(0, -40, 0);
+            this.scene.add(this.modelObj);
+          });
+          break;
+        }
+        default:
+          break;
+      }
     },
-    methods: {
-        init() {
-            let camera;
-            let model;
-            let scene;
-            let renderer;
-            let controls;
-            let modelName;
-            let modelType;
-            const container = document.getElementById("container");
-            //     const container = document.createElement( 'div' );
-            // document.body.appendChild(container);
-            scene = new THREE.Scene();
-            //相机
-            // camera = new THREE.PerspectiveCamera(
-            //     75,
-            //     window.innerWidth / window.innerHeight,
-            //     0.01,
-            //     1000
-            // );
-            camera = new THREE.PerspectiveCamera(75, 300 / 475, 0.01, 1000);
-
-            camera.position.set(10, 10, 50);
-
-            //渲染器
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setClearColor(0x404040);
-            renderer.setSize(300,475);
-            //renderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(renderer.domElement);
-
-            //光源
-            let light = new THREE.AmbientLight(0xffffff, 1);
-            scene.add(light);
-
-            const OBJLoad = new OBJLoader(); //obj加载器
-            const MTLLoad = new MTLLoader(); //材质文件加载器
-            modelName = "model1";
-            modelType = "obj";
-            let thePath = this.myModelInfo.path+this.myModelInfo.modelName
-            MTLLoad.load(thePath+'.mtl', function (materials) {
-                //obj的模型会和MaterialCreator包含的材质对应起来
-                OBJLoad.setMaterials(materials);
-                OBJLoad.load(thePath+".obj", function (obj) {
-                model = obj;
-                scene.add(obj); //返回的组对象插入场景中
-                obj.scale.set(0.3, 0.3, 0.3);
-                obj.position.set(0, -10, 0);
-                });
-            });
-            var textureLoader = new THREE.TextureLoader();
-            // 加载背景图片
-            var texture = textureLoader.load("/model/bg.png");
-            // 纹理对象Texture赋值给场景对象的背景属性.background
-            scene.background = texture;
-
-            //手势控制
-            controls = new OrbitControls(camera, renderer.domElement);
-            controls.enablePan = false;
-            controls.maxDistance = 100;
-            controls.minDistance = 1;
-            controls.update();
-                //render();       
-            function render(){
-            requestAnimationFrame(render);
-            renderer.render(scene, camera);
-            if (model) {
-                model.rotation.y += 0.01; //每次绕y轴旋转0.01弧度
-            }
-            controls.update();
-            } 
-         render();
-        },
+    controlModl: function () {
+      this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+      this.controls.enablePan = false;
+      this.controls.maxDistance = 100;
+      this.controls.minDistance = 1;
+      this.controls.update();
     },
-    
-    mounted(){
-         this.init()
+
+    //更换纹理贴图
+    changeMap(img) {
+      // 更换纹理贴图
+      if (this.modelObj.children[0]) {
+        let texture = new THREE.TextureLoader().load(
+          this.curModel.path + "/" + img + ".jpg"
+        );
+        let mtl = this.modelObj.children[0];
+        mtl.material.map = texture;
+      }
+      // if (modelType == "obj")
+      // {
+      //   let mtl = model.children[0];
+      //   mtl.material.map = texture;
+      //   console.log(mtl.material); }
+
+      // else if (modelType == "gltf") {
+      //   texture.wrapS = THREE.RepeatWrapping;
+      //   texture.wrapT = THREE.RepeatWrapping;
+      //   texture.repeat.set(1, 1);
+      //   this.modelObj.traverse(function (gltf) {
+      //     if (gltf.type === "Mesh") {
+      //       gltf.material = new THREE.MeshPhongMaterial({
+      //         color: 0xcccccc,
+      //         map: texture,
+      //         normalScale: new THREE.Vector2(1, 1),
+      //       }); }
+      //     });
+      //   }
     },
-}
-
-
-
-
+    changeModel() {
+ 
+       // 清空当前div下的canvas
+    //     if (this.scene !== null ) {
+    //  //   this.scene.children.pop()
+    //     const domDiv = document.getElementById('container')
+    //     if (domDiv !== null) {
+    //       domDiv.removeChild(domDiv.firstChild)
+    //     }} 
+      this.scene.remove(this.modelObj);
+      this.modelObj = null;    
+      this.curModel=this.modelAry[this.Flag]; 
+    //  this.init();
+      this.loadObj();
+    },
+  },
+  watch: {
+    modelAry() {
+      this.modeInfo = this.modelAry;
+    },
+    modelFlag(){
+      this.Flag = this.modelFlag;
+      this.changeModel();
+      }
+  },
+  mounted() {
+    this.curModel = this.modelAry[this.Flag];
+    if (this.curModel) {
+      //场景初始化
+      this.init();
+      //加载模型
+      this.loadObj();
+      this.render();
+    }
+  },
+  beforeDestroy() {
+    THREE.Cache.clear();
+    this.renderer.dispose();
+    this.renderer.forceContextLoss();
+    this.renderer.domElement = null;
+    this.renderer = null;
+  },
+};
 </script>
 <style lang="less">
+.box {
+    background-image: url("~@/assets/bg1.png");
+  height: 621px;
+  position: relative;
+  .left_aside,
+  .right_aside {
+    position: absolute;
+    bottom: 10%;
+    width: 10%;
+    height: 10%;
+    background-color: rgba(54, 50, 50, 0.5);
+    border-radius: 20%;
+    line-height: 60px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0px 0px 15px 0px rgba(54, 50, 50, 0.15);
+    cursor: pointer;
+  }
 
-    #container{
-        margin:2.5rem 2.5rem;
-        width:300px;
-        height:475px;
+  .left_aside {
+    left: 1.25rem;
+  }
+  .right_aside {
+    right: 1.25rem;
+  }
+  .left_aside:hover,
+  .right_aside:hover {
+    background-color: rgb(54, 50, 50);
+  }
+}
+
+#container {
+  //   margin-top:150px;
+  position: absolute;
+  top: 8rem;
+  margin-right: 2.5rem;
+  width: 375px;
+  height: 400px;
+}
+
+.intrBtn {
+  position: absolute;
+  top: 0;
+  right: 0.625rem;
+  button {
+    color: rgb(156, 156, 156);
+    padding: 0.5rem 0.5rem;
+    margin: 1.25rem 0.6rem;
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0px 0px 15px 0px rgba(54, 50, 50, 0.57);
+  }
+}
+.ctr_pannel {
+  width: 100%;
+  position: absolute;
+  bottom: 5%;
+  .texuBtn {
+    display: flex;
+    justify-content: center;
+    img {
+      width: 53px;
+      border-radius: 50%;
+      cursor: pointer;
+      margin: 1rem 1rem;
+      box-shadow: 0px 0px 15px 0px rgba(54, 50, 50, 0.87);
     }
+  }
+}
 </style>
