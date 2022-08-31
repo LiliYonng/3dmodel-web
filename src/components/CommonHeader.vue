@@ -1,14 +1,13 @@
 <template lang="">
-    <div class=''>
+    <div class='header'>
         <van-nav-bar
-            title="标题"
-            left-text="返回"
+            title="青花瓷展示"
             right-text="按钮"
             left-arrow
             @click-left="onClickLeft"
             >
         <template #right>
-            <van-icon name="search" size="18" />
+        <van-icon name="wap-nav" size='18' />
         </template>
         </van-nav-bar>
     </div>
@@ -19,7 +18,7 @@
 export default {
       methods: {
             onClickLeft() {
-            Toast('返回');
+            this.$router.push({name:"home"})
             },
             onClickRight() {
             Toast('按钮');
@@ -27,6 +26,20 @@ export default {
       },
     };
 </script>
-<style lang="">
-    
+<style lang="less">
+    .header{
+        .van-nav-bar{
+            background-color:rgb(180, 181, 170);
+            .van-icon{
+                color:#fff;
+            }
+            .van-nav-bar__title{
+               // color:#fff;
+                font-family:'STKaiti';
+                font-size:1.25rem;
+                font-weight:bold;
+            }
+            }
+        
+    }
 </style>

@@ -1,9 +1,17 @@
 <template>
   <div id="app">
+  <CommonHeader/>
   <router-view></router-view>
   </div>
 </template>
-
+<script>
+ import CommonHeader from '@/components/CommonHeader'
+ export default {
+  components:{
+    CommonHeader,
+  }
+ }
+</script>
 <style lang="less">
 html{
   background-color:black;
