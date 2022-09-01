@@ -24,7 +24,17 @@
               </p>
             </div>
           </van-swipe-item>
-          <van-swipe-item>2</van-swipe-item>
+          <van-swipe-item>
+                      <div class="content">
+              <img src="/model/info/model1.jpg" alt="">
+              <p>
+                青花瓷（blue and white
+                porcelain），又称白地青花瓷，常简称青花，是中国瓷器的主流品种之一，属釉下彩瓷。
+                青花瓷是用含氧化钴的钴矿为原料，在陶瓷坯体上描绘纹饰，再罩上一层透明釉，经高温还原焰一次烧成。
+                钴料烧成后呈蓝色，具有着色力强、发色鲜艳、烧成率高、呈色稳定的特点。
+              </p>
+            </div>
+          </van-swipe-item>
           <van-swipe-item>3</van-swipe-item>
           <van-swipe-item>4</van-swipe-item>
         </van-swipe>
