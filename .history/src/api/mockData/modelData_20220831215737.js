@@ -1,6 +1,0 @@
- 
-export default {
-    returnData:(config)=>{
-        
-    }
-}
