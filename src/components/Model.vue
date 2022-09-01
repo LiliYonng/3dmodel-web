@@ -1,11 +1,9 @@
 <template lang="">
   <div class="box">
-    <!-- <div class="intrBtn"> <button class="textIntr">文字介绍</button>
-  <button class="audioIntr">语音介绍</button> </div> <div class="left_aside"> < </div>
-  <div class="right_aside"> > </div> -->
+
     <div id="container"></div>
     <div class="ctr_pannel">
-      <div class="texuBtn" @click="changeMap('color2')">
+      <div class="texuBtn" @click="changeMap">
         <img src="/model/icon/color_icon.jpg" id="color" />
         <img src="/model/icon/specular_icon.jpg" id="specular" />
         <img src="/model/icon/gilt_icon.jpg" id="gilt" />
@@ -21,7 +19,7 @@ import { OrbitControls } from "../js/js/OrbitControls.js";
 import { GLTFLoader } from "../js/js/GLTFLoader.js";
 import { OBJLoader } from "../js/js/OBJLoader.js";
 import { MTLLoader } from "../js/js/MTLLoader.js";
-  import { Toast } from 'vant';
+
 export default {
   name: "model",
   props: ["modelAry","modelFlag"],
@@ -33,7 +31,7 @@ export default {
       // texAry: ["color", "specular", "gilt"],
       // path:"/model/"},
       //modelInfo: this.modelAry,
-     
+      //isLoading:true,
       Flag:this.modelFlag,
       curModel: null,
       modelObj: null,
@@ -59,7 +57,7 @@ export default {
       }
       this.controls.update();
       requestAnimationFrame(render);
-    },    
+    },
     //场景和模型的初始化
     initScen: function () {
       const container = document.getElementById("container");
@@ -90,7 +88,6 @@ export default {
       let modelName = this.curModel.name;
       let modelType = this.curModel.type;
       let Path = this.curModel.path + this.curModel.name;
-                 
       switch (modelType) {
         case "obj": {
            console.log(this);
@@ -105,6 +102,7 @@ export default {
             obj.position.set(0, 5, -8);
             this.modelObj = obj;
             this.scene.add(obj);
+            this.$store.commit("loaded");
           });
           break;
         }
@@ -119,11 +117,10 @@ export default {
             }
             else{
             this.modelObj.scale.set(2, 2, 2);
-            this.modelObj.position.set(0, -40, 0);              
+            this.modelObj.position.set(0, -40, 0);
             }
-
-
             this.scene.add(this.modelObj);
+            this.$store.commit("loaded");
           });
           break;
         }
@@ -140,15 +137,47 @@ export default {
     },
 
     //更换纹理贴图
-    changeMap(img) {
-      // 更换纹理贴图
-      if (this.modelObj.children[0]) {
-        let texture = new THREE.TextureLoader().load(
-          this.curModel.path + "/" + img + ".jpg"
-        );
-        let mtl = this.modelObj.children[0];
-        mtl.material.map = texture;
+    changeMap(e) {      
+      let modelType = this.curModel.type;      
+      let img =  e.target.id;
+      let path = '';
+      let texture = null;
+      if (this.modelObj.children[0])
+        path =   this.curModel.path  + img + ".jpg";
+
+      async function loadMap(){
+        let res = await new THREE.TextureLoader().load(path);
+        return res;
       }
+      loadMap().then((res)=>{
+             texture = res;
+            }).then(()=>{
+            switch(modelType)
+              {
+                case 'obj':{
+                let mtl = this.modelObj.children[0];
+                mtl.material.map = texture; 
+                break;
+                }
+                case 'gltf':{
+                texture.wrapS = THREE.RepeatWrapping;
+                texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(1, 1);
+                this.modelObj.traverse(function (gltf) {
+                  if (gltf.type === "Mesh") {
+                    gltf.material = new THREE.MeshPhongMaterial({
+                      color: 0xcccccc,
+                      map: texture,
+                      normalScale: new THREE.Vector2(1, 1),
+                    }); }
+                  });
+                
+                break;}
+               }}).catch((error)=>{console.log(error)} );
+    },
+        // let texture = new THREE.TextureLoader().load(
+        //   this.curModel.path  + img + ".jpg"
+        // );
       // if (modelType == "obj")
       // {
       //   let mtl = model.children[0];
@@ -156,31 +185,33 @@ export default {
       //   console.log(mtl.material); }
 
       // else if (modelType == "gltf") {
-      //   texture.wrapS = THREE.RepeatWrapping;
-      //   texture.wrapT = THREE.RepeatWrapping;
-      //   texture.repeat.set(1, 1);
-      //   this.modelObj.traverse(function (gltf) {
-      //     if (gltf.type === "Mesh") {
-      //       gltf.material = new THREE.MeshPhongMaterial({
-      //         color: 0xcccccc,
-      //         map: texture,
-      //         normalScale: new THREE.Vector2(1, 1),
-      //       }); }
-      //     });
-      //   }
-    },
+        // texture.wrapS = THREE.RepeatWrapping;
+        // texture.wrapT = THREE.RepeatWrapping;
+        // texture.repeat.set(1, 1);
+        // this.modelObj.traverse(function (gltf) {
+        //   if (gltf.type === "Mesh") {
+        //     gltf.material = new THREE.MeshPhongMaterial({
+        //       color: 0xcccccc,
+        //       map: texture,
+        //       normalScale: new THREE.Vector2(1, 1),
+        //     }); }
+        //   });
+        // }
+
     changeModel() {
- 
+
        // 清空当前div下的canvas
     //     if (this.scene !== null ) {
     //  //   this.scene.children.pop()
     //     const domDiv = document.getElementById('container')
     //     if (domDiv !== null) {
     //       domDiv.removeChild(domDiv.firstChild)
-    //     }} 
+    //     }}
+      this.$store.state
+      this.$store.commit("loading");
       this.scene.remove(this.modelObj);
-      this.modelObj = null;    
-      this.curModel=this.modelAry[this.Flag]; 
+      this.modelObj = null;
+      this.curModel=this.modelAry[this.Flag];
     //  this.init();
       this.loadObj();
     },
@@ -197,22 +228,24 @@ export default {
   computed:{
     modelInfo(){
       return this.$store.state.modelData.modelAry;
-    }
+    },
   },
   mounted() {
-    console.log(this.modelInfo[0]);
+    const vm = this;
     this.curModel = this.modelInfo[this.Flag];
-    console.log(this.curModel);
-    if(!this.curModel)
-    {
-    Toast("没有模型")
+    async function load(){
+      const Promise1 = vm.init();
+      const Promise2 = vm.loadObj();
+      await Promise1;
+      await Promise2;
+     
     }
     if (this.curModel) {
       //场景初始化
-      this.init();
-      //加载模型
-      this.loadObj();
-      this.render();
+      load().then(()=>{
+        this.render();
+        //this.isLoading=false;
+      })
     }
   },
   beforeDestroy() {
@@ -225,8 +258,9 @@ export default {
 };
 </script>
 <style lang="less">
+
 .box {
-    background-image: url("~@/assets/bg1.png");
+  background-image: url("~@/assets/bg1.png");
   height: 621px;
   position: relative;
   .left_aside,

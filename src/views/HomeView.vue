@@ -1,5 +1,6 @@
 <template>
   <div class="Home">
+    <CommonLoad/>
     <div class="Btn">
       <div class="btnBox" v-for="(item, index) in porceInfo" @click="select(index)">
         <img class="pic" :src="require('../assets/icon/' + item.iconName)">
@@ -15,6 +16,7 @@
 <script>
 import {Toast} from 'vant'
 import {getModel} from '../api/getData.js'
+import CommonLoad from '@/components/CommonLoad'
 // @ is an alias to /src
 export default {
   data() {
@@ -57,9 +59,9 @@ export default {
                 this.$store.commit('clearModelAry');
                 this.$store.commit('setModelAry',ary);
                 this.$router.push({name:'model'});
+                this.$store.commit("loading");
               }
             }
-            
           }).catch(error=>console.log(error));
     }
   },
@@ -81,7 +83,7 @@ export default {
       background-position: 50% 50%;
       background-size: contain;
       border-radius: 50%;
-      animation: rotate 10s linear infinite;
+      animation: rotate 20s linear infinite;
 
     }
 
