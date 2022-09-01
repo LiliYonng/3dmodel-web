@@ -1,6 +1,7 @@
 <template lang="">
   <div class="model_view">
     <Model :modelAry="modelAry" :modelFlag="modelFlag" />
+    <CommonLoad/>
     <div class="controlBtn">
       <div class="intrBtn">
         <button class="textIntr" @click="showInfo = true">文字介绍</button>
@@ -33,6 +34,7 @@
 </template>
 
 <script>
+import CommonLoad from '@/components/CommonLoad'
 import CommonAside from "@/components/CommonAside";
 import CommonHeader from "@/components/CommonHeader";
 import Model from "../components/Model";
@@ -42,6 +44,7 @@ export default {
     CommonAside,
     CommonHeader,
     Model,
+    CommonLoad
   },
   data() {
     return {
