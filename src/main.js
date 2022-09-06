@@ -13,9 +13,9 @@ router.beforeEach((to,from,next)=>{
   store.commit('getModelAry')
   const ary = store.state.modelData.modelAry;
   if(ary.length===0 && to.name==='model'){
-    next({name:'home'})
+    next({name:'home'});
   }else{
-    next()
+    next();
   }
 })
 new Vue({
