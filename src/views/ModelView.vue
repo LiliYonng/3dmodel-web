@@ -15,7 +15,7 @@
         <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
           <van-swipe-item>
             <div class="content">
-              <img src="/model/info/model1.jpg" alt="">
+              <img src="/model/info/model1.jpeg" alt="">
               <p>
                 青花瓷（blue and white
                 porcelain），又称白地青花瓷，常简称青花，是中国瓷器的主流品种之一，属釉下彩瓷。
@@ -26,7 +26,7 @@
           </van-swipe-item>
           <van-swipe-item>
                       <div class="content">
-              <img src="/model/info/model1.jpg" alt="">
+              <img src="/model/info/model1.jpeg" alt="">
               <p>
                 青花瓷（blue and white
                 porcelain），又称白地青花瓷，常简称青花，是中国瓷器的主流品种之一，属釉下彩瓷。
@@ -91,7 +91,11 @@ export default {
         }
         //下一个
         case 1: {
-          if (this.modelFlag < this.modelAry.length - 1) this.modelFlag++;
+          if (this.modelFlag < this.modelAry.length - 1) 
+          {
+            this.modelFlag++;
+            console.log(this.modelAry.length);
+          }
           else Notify({ type: "danger", message: "没有下一个了" });
           break;
         }

@@ -4,9 +4,6 @@
     <div class="Btn">
       <div class="btnBox" v-for="(item, index) in porceInfo" @click="select(index)">
         <img class="pic" :src="require('../assets/icon/' + item.iconName)">
-        
-        <!-- :style="{top:item.axes.y+"%",left:item.axes.x+"%",width:item.size+"px",height:item.size+"px"}" -->
-
         <span class="text">{{ item.name }}</span>
       </div>
     </div>
@@ -19,6 +16,7 @@ import {getModel} from '../api/getData.js'
 import CommonLoad from '@/components/CommonLoad'
 // @ is an alias to /src
 export default {
+  components:{CommonLoad},
   data() {
     return {
       porceInfo:[
@@ -33,7 +31,7 @@ export default {
         },{       
           id:1003,  
            name:"元",
-          iconName:'yuan.png',          },
+          iconName:'yuan.png'},
           {
             id:1004,
             name:"明",
@@ -51,7 +49,6 @@ export default {
             if(res.code === 200)
             {
               const ary = res.data.modelAry;
-              console.log(ary);
               if(ary.length === 0)
                 Toast("暂时没有数据");
               else
@@ -71,7 +68,7 @@ export default {
 <style lang="less">
 .Home {
   height: 621px;
-  background-image: url("~@/assets/bg.png");
+  background-image: url("~@/assets/bg.jpeg");
   position: relative;
   .Btn {
 

@@ -4,9 +4,9 @@
     <div id="container"></div>
     <div class="ctr_pannel">
       <div class="texuBtn" @click="changeMap">
-        <img src="/model/icon/color_icon.jpg" id="color" />
-        <img src="/model/icon/specular_icon.jpg" id="specular" />
-        <img src="/model/icon/gilt_icon.jpg" id="gilt" />
+        <img src="/model/icon/color_icon.jpeg" id="color" />
+        <img src="/model/icon/specular_icon.jpeg" id="specular" />
+        <img src="/model/icon/gilt_icon.jpeg" id="gilt" />
       </div>
     </div>
   </div>
@@ -80,7 +80,7 @@ export default {
 
       //var textureLoader = new THREE.TextureLoader();
       // 加载背景图片
-      //var texture = textureLoader.load("/model/bg.png");
+      //var texture = textureLoader.load("/model/bg.jpeg");
       // 纹理对象Texture赋值给场景对象的背景属性.background
       // this.scene.background = texture;
     },
@@ -90,7 +90,6 @@ export default {
       let Path = this.curModel.path + this.curModel.name;
       switch (modelType) {
         case "obj": {
-           console.log(this);
           const OBJLoad = new OBJLoader(); //obj加载器
           const MTLLoad = new MTLLoader(); //材质文件加载器
           //obj的模型会和MaterialCreator包含的材质对应起来
@@ -140,11 +139,9 @@ export default {
     changeMap(e) {      
       let modelType = this.curModel.type;      
       let img =  e.target.id;
-      let path = '';
+      if(!img) return;
       let texture = null;
-      if (this.modelObj.children[0])
-        path =   this.curModel.path  + img + ".jpg";
-
+      let path =   this.curModel.path  + img + ".jpeg";
       async function loadMap(){
         let res = await new THREE.TextureLoader().load(path);
         return res;
@@ -165,18 +162,20 @@ export default {
                 texture.repeat.set(1, 1);
                 this.modelObj.traverse(function (gltf) {
                   if (gltf.type === "Mesh") {
-                    gltf.material = new THREE.MeshPhongMaterial({
+                    let newM = new THREE.MeshPhongMaterial({
                       color: 0xcccccc,
                       map: texture,
                       normalScale: new THREE.Vector2(1, 1),
-                    }); }
+                    }); 
+                    gltf.material = newM;
+                    }
                   });
                 
                 break;}
                }}).catch((error)=>{console.log(error)} );
     },
         // let texture = new THREE.TextureLoader().load(
-        //   this.curModel.path  + img + ".jpg"
+        //   this.curModel.path  + img + ".jpeg"
         // );
       // if (modelType == "obj")
       // {
@@ -260,7 +259,7 @@ export default {
 <style lang="less">
 
 .box {
-  background-image: url("~@/assets/bg1.png");
+  background-image: url("~@/assets/bg1.jpeg");
   height: 621px;
   position: relative;
   .left_aside,
