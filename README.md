@@ -16,13 +16,15 @@ __技术栈__ &ensp;
 ### 项目背景
 &ensp;&ensp;以中国古代陶瓷的发展和风格变化为主题设计。用户在首页可以选择不同朝代的陶瓷，项目将以3D形式展示该时期的系列典型陶瓷，同时用户可以和陶瓷进行一定的交互（缩放旋转），点击按钮切换陶瓷的花纹颜色以及陶瓷的模型。也可以选择上方按钮进行文字介绍和语音介绍。
 
-### 项目展示：
-页面展示及跳转
-<img src="https://s2.loli.net/2022/09/01/rQI2Ojbq6WZkvRf.gif" width=300px/>
-<br/>
+### 部分功能展示：
+页面展示及跳转  
+<img src="https://s2.loli.net/2022/09/01/rQI2Ojbq6WZkvRf.gif" width=300px/>   
+- - -
 
-文字介绍
-<img src="https://s2.loli.net/2022/09/01/WQvxaVMkySflRTu.gif" width=300px/>
+模型交互  
+
+<img src="https://s2.loli.net/2022/09/01/LMKDfHE1RgIeqzd.gif" width=300px/>
+
 
 ### 项目运行
 ```
