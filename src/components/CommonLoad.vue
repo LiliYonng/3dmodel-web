@@ -1,6 +1,6 @@
 <template lang="">
     <div class="loadingBox" v-show="isLoading">
-      <van-loading type="spinner" size="50px" color="#fff"  />
+        <van-loading type="spinner" size="50px" color="#fff"  />
     </div>
 </template>
 <script>
@@ -15,7 +15,7 @@ export default {
 </script>
 <style lang="less">
 .loadingBox{
-    z-index:10000;
+  z-index:10000;
   position:absolute;
   top:0;
   left:0;
@@ -25,7 +25,7 @@ export default {
   //background-color:rgba(54, 50, 50, 0.8);
   .van-loading{
     margin-top:70%;
-    margin-left:50%;
+    margin-left:45%;
   }
 }
 .loadingBox-enter,
