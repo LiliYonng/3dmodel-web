@@ -10,9 +10,8 @@ const mingAry = [
       type: "obj",
       texAry: ["color", "specular", "gilt"],
       path: "/model/model1/",
-    },
-
-    ,];
+    }
+    ];
     const tangAry=[    {
         name: "model3",
         type: "gltf",
