@@ -206,6 +206,7 @@ export default {
     //     if (domDiv !== null) {
     //       domDiv.removeChild(domDiv.firstChild)
     //     }}
+      if(!this.modelAry[this.Flag]) return;
       this.$store.state
       this.$store.commit("loading");
       this.scene.remove(this.modelObj);

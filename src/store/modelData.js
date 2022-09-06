@@ -5,10 +5,11 @@ export default {
     },
     mutations:{
         setModelAry(state,val){
-            if (Object.keys(val).length)
+            if (val.length!=0)
             Cookies.set('modelAry',JSON.stringify(val));
+            console.log(val);
             state.modelAry = val;
-            console.log(state.modelAry);
+            
         },
         getModelAry(state){
             const data = Cookies.get('modelAry')
