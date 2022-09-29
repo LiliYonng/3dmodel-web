@@ -32,6 +32,7 @@ export default {
       // path:"/model/"},
       //modelInfo: this.modelAry,
       //isLoading:true,
+      myAnima:null,
       Flag:this.modelFlag,
       curModel: null,
       modelObj: null,
@@ -49,14 +50,12 @@ export default {
       this.controlModl();
     },
     render() {
-      const render= this.render;
-
       this.renderer.render(this.scene, this.camera);
       if (this.modelObj) {
         this.modelObj.rotation.y += 0.01; //每次绕y轴旋转0.01弧度
       }
       this.controls.update();
-      requestAnimationFrame(render);
+      this.myAnima = requestAnimationFrame(this.render);
     },
     //场景和模型的初始化
     initScen: function () {
@@ -217,9 +216,6 @@ export default {
     },
   },
   watch: {
-    // modelAry() {
-    //   this.modeInfo = this.modelAry;
-    // },
     modelFlag(){
       this.Flag = this.modelFlag;
       this.changeModel();
@@ -249,6 +245,7 @@ export default {
     }
   },
   beforeDestroy() {
+    cancelAnimationFrame(this.myAnima);//取消动画
     THREE.Cache.clear();
     this.renderer.dispose();
     this.renderer.forceContextLoss();
