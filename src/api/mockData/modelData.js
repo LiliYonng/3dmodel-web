@@ -49,12 +49,12 @@ const ModelInfo = [
         modelAry:qingAry,
     }
 ];
+
 export default {
-    returnData:(config)=>{
-        const id =config.body;
-        // let arrCopy = JSON.parse(JSON.stringify(ModelInfo.modelAry));
+    returnData:({url})=>{
+        const id = url.split("=")[1];
         const obj=ModelInfo.find((item)=>{
-            return item.id ===id;
+            return item.id == id;
         })
         return{
             code:200,
