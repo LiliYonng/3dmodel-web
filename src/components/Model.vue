@@ -83,48 +83,45 @@ export default {
       // 纹理对象Texture赋值给场景对象的背景属性.background
       // this.scene.background = texture;
     },
-    loadObj: function () {
+    loadModel: function () {
+      const vm = this;
       let modelName = this.curModel.name;
       let modelType = this.curModel.type;
-      let Path = this.curModel.path + this.curModel.name;
-      switch (modelType) {
-        case "obj": {
-          const OBJLoad = new OBJLoader(); //obj加载器
-          const MTLLoad = new MTLLoader(); //材质文件加载器
-          //obj的模型会和MaterialCreator包含的材质对应起来
-          MTLLoad.load(Path + ".mtl", function (materials) {
-            OBJLoad.setMaterials(materials);
-          });
-          OBJLoad.load(Path + ".obj", (obj) => {
-            obj.scale.set(0.4, 0.4, 0.4);
-            obj.position.set(0, 5, -8);
-            this.modelObj = obj;
-            this.scene.add(obj);
-            this.$store.commit("loaded");
-          });
-          break;
-        }
-        case "gltf": {
-          const loader = new GLTFLoader(); //'model/p/'
-          //匿名函数this指向全局对象。如果使用非匿名函数需要将this指向vm
-          loader.load(Path + ".gltf",  (gltf) =>{
-            this.modelObj = gltf.scene;
-            if(modelName==='model3'){
-            this.modelObj.scale.set(60,60,60);
-            this.modelObj.position.set(0, -10, 0);
-            }
-            else{
-            this.modelObj.scale.set(2, 2, 2);
-            this.modelObj.position.set(0, -40, 0);
-            }
-            this.scene.add(this.modelObj);
-            this.$store.commit("loaded");
-          });
-          break;
-        }
-        default:
-          break;
+      let Path = this.curModel.path + this.curModel.name;   
+      let scale = this.curModel.scale;
+      let position = this.curModel.position; 
+
+      async function load(myPath,myLoader){
+        return new Promise((resolve,reject)=>{
+          myLoader.load(myPath,(res)=>{resolve(res)});
+        })}
+      function addModel(obj,scale,position){
+            obj.scale.set(...scale);
+            obj.position.set(...position);
+            vm.modelObj = obj;
+            vm.scene.add(obj);
       }
+      if(modelType === 'obj')
+        {
+        const OBJLoad = new OBJLoader(); //obj加载器
+        const MTLLoad = new MTLLoader(); //材质文件加载器,返回MaterialCreator，设为OBJLoader的值
+          load(Path+'.mtl',MTLLoad).then(mtl=>{
+            OBJLoad.setMaterials(mtl);
+            return load(Path+'.obj',OBJLoad);
+          }).then(obj=>{
+            addModel(obj,scale,position);
+          })
+        }
+      else if(modelType ==='gltf')
+        {
+            const gltfLoad = new GLTFLoader();
+            load(Path + ".gltf",gltfLoad).then(
+              gltf=>{
+                addModel(gltf.scene,scale,position);
+              }
+            )
+        }
+      this.$store.commit("loaded");
     },
     controlModl: function () {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -212,7 +209,7 @@ export default {
       this.modelObj = null;
       this.curModel=this.modelAry[this.Flag];
     //  this.init();
-      this.loadObj();
+      this.loadModel();
     },
   },
   watch: {
@@ -231,7 +228,7 @@ export default {
     this.curModel = this.modelInfo[this.Flag];
     async function load(){
       const Promise1 = vm.init();
-      const Promise2 = vm.loadObj();
+      const Promise2 = vm.loadModel();
       await Promise1;
       await Promise2;
      
