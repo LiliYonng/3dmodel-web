@@ -12,11 +12,15 @@ import {getModel} from '../src/api/getData.js'
     CommonHeader,
   },
   created(){
+        this.$store.commit('getModelAry')
+        const ary =this.$store.state.modelData.modelAry;
+        if(ary.length)return;
           getModel().then(({data:res})=>{
            if(res.code === 200)
             {
                 const ary = res.data.modelAry;
                 this.$store.commit('setModelAry',ary);
+          
             }
           }).catch(error=>console.log(error));
   }
