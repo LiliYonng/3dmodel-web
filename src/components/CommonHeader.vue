@@ -18,6 +18,7 @@
 export default {
       methods: {
             onClickLeft() {
+            if(this.$route.name !='home')
             this.$router.push({name:"home"})
             },
             onClickRight() {

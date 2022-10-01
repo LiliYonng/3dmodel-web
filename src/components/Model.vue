@@ -1,6 +1,5 @@
 <template lang="">
   <div class="box">
-
     <div id="container"></div>
     <div class="ctr_pannel">
       <div class="texuBtn" @click="changeMap">
@@ -25,13 +24,7 @@ export default {
   props: ["modelAry","modelFlag"],
   data() {
     return {
-      // curModel: {
-      // name: "model1",
-      // type: "obj",
-      // texAry: ["color", "specular", "gilt"],
-      // path:"/model/"},
-      //modelInfo: this.modelAry,
-      //isLoading:true,
+      modelInfo: this.modelAry,
       myAnima:null,
       Flag:this.modelFlag,
       curModel: null,
@@ -170,45 +163,14 @@ export default {
                 break;}
                }}).catch((error)=>{console.log(error)} );
     },
-        // let texture = new THREE.TextureLoader().load(
-        //   this.curModel.path  + img + ".jpeg"
-        // );
-      // if (modelType == "obj")
-      // {
-      //   let mtl = model.children[0];
-      //   mtl.material.map = texture;
-      //   console.log(mtl.material); }
 
-      // else if (modelType == "gltf") {
-        // texture.wrapS = THREE.RepeatWrapping;
-        // texture.wrapT = THREE.RepeatWrapping;
-        // texture.repeat.set(1, 1);
-        // this.modelObj.traverse(function (gltf) {
-        //   if (gltf.type === "Mesh") {
-        //     gltf.material = new THREE.MeshPhongMaterial({
-        //       color: 0xcccccc,
-        //       map: texture,
-        //       normalScale: new THREE.Vector2(1, 1),
-        //     }); }
-        //   });
-        // }
 
     changeModel() {
-
-       // 清空当前div下的canvas
-    //     if (this.scene !== null ) {
-    //  //   this.scene.children.pop()
-    //     const domDiv = document.getElementById('container')
-    //     if (domDiv !== null) {
-    //       domDiv.removeChild(domDiv.firstChild)
-    //     }}
-      if(!this.modelAry[this.Flag]) return;
-      this.$store.state
+      if(!this.modelInfo[this.Flag]) return;
       this.$store.commit("loading");
       this.scene.remove(this.modelObj);
       this.modelObj = null;
-      this.curModel=this.modelAry[this.Flag];
-    //  this.init();
+      this.curModel=this.modelInfo[this.Flag];
       this.loadModel();
     },
   },
@@ -219,35 +181,27 @@ export default {
       }
   },
   computed:{
-    modelInfo(){
-      return this.$store.state.modelData.modelAry;
-    },
+
   },
   mounted() {
     const vm = this;
     this.curModel = this.modelInfo[this.Flag];
-    async function load(){
-      const Promise1 = vm.init();
-      const Promise2 = vm.loadModel();
-      await Promise1;
-      await Promise2;
-     
-    }
-    if (this.curModel) {
-      //场景初始化
-      load().then(()=>{
-        this.render();
-        //this.isLoading=false;
-      })
-    }
+    if(!this.curModel) return;
+    this.init();
+    this.loadModel();
+    this.render();
   },
   beforeDestroy() {
     cancelAnimationFrame(this.myAnima);//取消动画
     THREE.Cache.clear();
-    this.renderer.dispose();
-    this.renderer.forceContextLoss();
-    this.renderer.domElement = null;
-    this.renderer = null;
+    if(this.renderer)
+    {
+      this.renderer.dispose();
+      this.renderer.forceContextLoss();
+      this.renderer.domElement = null;
+      this.renderer = null;
+    }
+
   },
 };
 </script>

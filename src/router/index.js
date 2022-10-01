@@ -10,7 +10,7 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/3dmodel',
+    path: '/3dmodel/:id',
     name: 'model',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

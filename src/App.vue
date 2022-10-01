@@ -6,9 +6,19 @@
 </template>
 <script>
  import CommonHeader from '@/components/CommonHeader'
+import {getModel} from '../src/api/getData.js'
  export default {
   components:{
     CommonHeader,
+  },
+  created(){
+          // getModel().then(({data:res})=>{
+          //  if(res.code === 200)
+          //   {
+          //       const ary = res.data.modelAry;
+          //       this.$store.commit('setModelAry',ary);
+          //   }
+          // }).catch(error=>console.log(error));
   }
  }
 </script>
