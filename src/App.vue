@@ -12,13 +12,13 @@ import {getModel} from '../src/api/getData.js'
     CommonHeader,
   },
   created(){
-          // getModel().then(({data:res})=>{
-          //  if(res.code === 200)
-          //   {
-          //       const ary = res.data.modelAry;
-          //       this.$store.commit('setModelAry',ary);
-          //   }
-          // }).catch(error=>console.log(error));
+          getModel().then(({data:res})=>{
+           if(res.code === 200)
+            {
+                const ary = res.data.modelAry;
+                this.$store.commit('setModelAry',ary);
+            }
+          }).catch(error=>console.log(error));
   }
  }
 </script>
