@@ -2,7 +2,7 @@
   <div class="Home">
     <CommonLoad/>
     <div class="Btn">
-      <div class="btnBox" v-for="(item, index) in porceInfo" @click="select(index)">
+      <div class="btnBox" v-for="(item, index) in porceInfo" :key=index @click="select(item.id)">
         <img class="pic" :src="require('../assets/icon/' + item.iconName)">
         <span class="text">{{ item.name }}</span>
       </div>
@@ -19,6 +19,7 @@ export default {
   components:{CommonLoad},
   data() {
     return {
+      modelAry:[],
       porceInfo:[
         {
           id:1001,
@@ -37,29 +38,12 @@ export default {
             name:"明",
             iconName:"ming.png",          
           }
-      ]
+      ],
     }
   },
   methods: {
-    select(index){
-      let id = this.porceInfo[index].id;
-      //this.$router.push({name:'model'});
-      //发送请求获取数据存入vuex modelView页面通过vuex获取数据
-         getModel(id).then(({data:res})=>{
-            if(res.code === 200)
-            {
-              const ary = res.data.modelAry;
-              if(ary.length === 0)
-                Toast("暂时没有数据");
-              else
-              {
-                this.$store.commit('clearModelAry');
-                this.$store.commit('setModelAry',ary);
-                this.$router.push({name:'model'});
-                this.$store.commit("loading");
-              }
-            }
-          }).catch(error=>console.log(error));
+    select(id){
+    this.$router.push({path: `/3dmodel/${id}`,});
     }
   },
 

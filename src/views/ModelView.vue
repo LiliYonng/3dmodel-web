@@ -48,7 +48,7 @@ import CommonLoad from '@/components/CommonLoad'
 import CommonAside from "@/components/CommonAside";
 import CommonHeader from "@/components/CommonHeader";
 import Model from "../components/Model";
-import { Notify, Overlay, Swipe, SwipeItem } from "vant";
+import {Toast, Notify, Overlay, Swipe, SwipeItem } from "vant";
 export default {
   components: {
     CommonAside,
@@ -60,32 +60,45 @@ export default {
     return {
       showInfo: false,
       modelFlag: 0,
-      // modelAry: [
-      //   {
-      //     name: "model1",
-      //     type: "obj",
-      //     texAry: ["color", "specular", "gilt"],
-      //     path: "/model/model1/",
-      //   },
-      //   {
-      //     name: "model2",
-      //     type: "gltf",
-      //     texAry: ["color", "specular", "gilt"],
-      //     path: "/model/model2/",
-      //   },
-      // ],
-      modelAry:[]
+      modelAry:[],
     };
   },
-  mounted() {
-    this.modelAry = this.$store.state.modelData.modelAry;
+ created() {    
+  let totalAry = this.$store.state.modelData.modelAry;
+    let id = this.$route.params.id;
+    let ary = totalAry.filter(item=>{ return item.groupId==id;});
+    if(ary.length==0)
+    {
+      Toast('没有数据');
+      this.$router.push({name:'home'})
+    }
+    this.modelAry = ary;    
+    //刷新保留lastFlag;
+    let lastFlag = sessionStorage.getItem('lastFlag');
+    this.modelFlag =lastFlag?lastFlag:0;
+    window.modelFlag=this.modelFlag;
   },
+  beforeDestroy(){
+ sessionStorage.removeItem('lastFlag');
+  },
+  mounted(){
+    //页面刷新时保存数据
+    window.addEventListener("beforeunload", function(e) {
+      if(typeof(window.modelFlag)!='undefined')
+      sessionStorage.setItem('lastFlag',window.modelFlag);
+    }); 
+  },
+   
   methods: {
     changeModel(num) {
       switch (num) {
         //上一个model
         case 0: {
-          if (this.modelFlag > 0) this.modelFlag--;
+          if (this.modelFlag > 0)
+          { this.modelFlag--;
+          window.modelFlag=this.modelFlag;
+          console.log(window.modelFlag);
+          }
           else Notify({ type: "danger", message: "没有上一个了" });
           break;
         }
@@ -94,7 +107,8 @@ export default {
           if (this.modelFlag < this.modelAry.length - 1) 
           {
             this.modelFlag++;
-            console.log(this.modelAry.length);
+            window.modelFlag=this.modelFlag;
+            console.log(window.modelFlag);
           }
           else Notify({ type: "danger", message: "没有下一个了" });
           break;
