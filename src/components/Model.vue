@@ -11,7 +11,7 @@
   </div>
 </template>
 
-<script>
+<script >
 import * as THREE from "three";
 
 import { OrbitControls } from "../js/js/OrbitControls.js";
@@ -127,7 +127,6 @@ export default {
 
     //更换纹理贴图
     changeMap(e) {     
-      this.$store.commit('loading');
       let modelType = this.curModel.type;      
       let img =  e.target.id;
       if(!img) return;
@@ -137,6 +136,7 @@ export default {
         let res = await new THREE.TextureLoader().load(path);
         return res;
       }
+      this.$store.commit('loading');
       loadMap().then((res)=>{
              texture = res;
             }).then(()=>{
@@ -164,7 +164,7 @@ export default {
                 break;
                 }
                }
-               this.$store.commit('loaded');
+              this.$store.commit('loaded');
                }).catch((error)=>{console.log(error)} );
    
     },

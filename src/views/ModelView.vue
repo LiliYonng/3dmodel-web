@@ -12,7 +12,7 @@
     </div>
     <van-overlay :show="showInfo" @click="showInfo = false">
       <div class="wrapper" @click.stop>
-        <van-swipe class="my-swipe" :autoplay="3000" indicator-color="white">
+        <van-swipe class="my-swipe" indicator-color="white" ref="swipe">
           <van-swipe-item>
             <div class="content">
               <img src="/model/info/model1.jpeg" alt="">
@@ -63,9 +63,15 @@ export default {
       modelAry:[],
     };
   },
+  // beforeRouteEnter (to, from, next) {
+  //   next(vm)=>{vm.target = to.params.}
+  // }
  created() {    
   let totalAry = this.$store.state.modelData.modelAry;
     let id = this.$route.params.id;
+    if(id)sessionStorage.setItem('id',id)
+    else id = sessionStorage.getItem('id');
+    
     let ary = totalAry.filter(item=>{ return item.groupId==id;});
     if(ary.length==0)
     {
@@ -82,6 +88,7 @@ export default {
  sessionStorage.removeItem('lastFlag');
   },
   mounted(){
+    this.$refs.swipe.resize();
     //页面刷新时保存数据
     window.addEventListener("beforeunload", function(e) {
       if(typeof(window.modelFlag)!='undefined')
@@ -97,7 +104,6 @@ export default {
           if (this.modelFlag > 0)
           { this.modelFlag--;
           window.modelFlag=this.modelFlag;
-          console.log(window.modelFlag);
           }
           else Notify({ type: "danger", message: "没有上一个了" });
           break;
@@ -108,7 +114,6 @@ export default {
           {
             this.modelFlag++;
             window.modelFlag=this.modelFlag;
-            console.log(window.modelFlag);
           }
           else Notify({ type: "danger", message: "没有下一个了" });
           break;
