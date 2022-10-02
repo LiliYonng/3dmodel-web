@@ -43,7 +43,12 @@ export default {
   },
   methods: {
     select(id){
-    this.$router.push({path: `/3dmodel/${id}`,});
+    this.$router.push({
+      name:'model',
+      params: {
+        id: id
+        }
+    });
     }
   },
 
