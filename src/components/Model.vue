@@ -103,6 +103,7 @@ export default {
             return load(Path+'.obj',OBJLoad);
           }).then(obj=>{
             addModel(obj,scale,position);
+               this.$store.commit("loaded");
           })
         }
       else if(modelType ==='gltf')
@@ -111,10 +112,10 @@ export default {
             load(Path + ".gltf",gltfLoad).then(
               gltf=>{
                 addModel(gltf.scene,scale,position);
+                   this.$store.commit("loaded");
               }
             )
         }
-      this.$store.commit("loaded");
     },
     controlModl: function () {
       this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -125,7 +126,8 @@ export default {
     },
 
     //更换纹理贴图
-    changeMap(e) {      
+    changeMap(e) {     
+      this.$store.commit('loading');
       let modelType = this.curModel.type;      
       let img =  e.target.id;
       if(!img) return;
@@ -159,9 +161,12 @@ export default {
                     gltf.material = newM;
                     }
                   });
-                
-                break;}
-               }}).catch((error)=>{console.log(error)} );
+                break;
+                }
+               }
+               this.$store.commit('loaded');
+               }).catch((error)=>{console.log(error)} );
+   
     },
 
 
@@ -172,6 +177,7 @@ export default {
       this.modelObj = null;
       this.curModel=this.modelInfo[this.Flag];
       this.loadModel();
+       this.$store.commit("loaded");
     },
   },
   watch: {
@@ -187,6 +193,7 @@ export default {
     const vm = this;
     this.curModel = this.modelInfo[this.Flag];
     if(!this.curModel) return;
+    this.$store.commit('loading');
     this.init();
     this.loadModel();
     this.render();
